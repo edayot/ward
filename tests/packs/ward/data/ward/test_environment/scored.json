@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:function",
+  "setup": "ward:helper/env_setup",
+  "teardown": "ward:helper/env_teardown"
+}

@@ -1,0 +1,16 @@
+{
+  "pack": {
+    "description": "Ward overlay fixture: the overlays section is invalid",
+    "pack_format": 81,
+    "min_format": 81,
+    "max_format": 81
+  },
+  "overlays": {
+    "entries": [
+      {
+        "directory": "broken_overlay",
+        "formats": "not-a-range"
+      }
+    ]
+  }
+}

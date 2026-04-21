@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcward-beet"
+dynamic = ["version"]
+description = "Beet plugin for Ward - A testing framework for Minecraft datapacks using mcfunction."
+readme = "README.md"
+requires-python = ">=3.14"
+license = { text = "MPL-2.0" }
+authors = [{ name = "Aksiome", email = "54895777+aksiome@users.noreply.github.com" }]
+dependencies = [
+    "mcward-core",
+    "mcward-cli",
+    "beet>=0.116.0",
+]
+
+[tool.uv.sources]
+mcward-core = { workspace = true }
+mcward-cli = { workspace = true }
+
+# Loaded by the beet toolchain to register the beet test command
+[project.entry-points.beet]
+commands = "mcward.beet.commands"
+
+[tool.hatch.version]
+path = "../../pyproject.toml"
+pattern = '^version = "(?P<version>[^"]+)"$'
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcward"]
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"

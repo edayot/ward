@@ -1,0 +1,42 @@
+name: maintenance
+on:
+  push:
+    branches: [main]
+    paths: [gradle.properties]
+
+jobs:
+  cut:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: cut maintenance branch when the line changed
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          # A new branch or force push has no meaningful previous commit
+          if ! git cat-file -e "$BEFORE" 2> /dev/null; then
+            echo "no previous commit to compare against"
+            exit 0
+          fi
+
+          line() {
+            git show "$1:gradle.properties" | grep '^minecraft_version=' \
+              | grep -oE '[0-9]+\.[0-9]+' | head -1
+          }
+          old=$(line "$BEFORE")
+          new=$(line HEAD)
+
+          if [ "$old" = "$new" ]; then
+            echo "minecraft line unchanged ($new)"
+          elif git ls-remote --exit-code origin "refs/heads/$old" > /dev/null 2>&1; then
+            echo "maintenance branch $old already exists"
+          else
+            git push origin "$BEFORE:refs/heads/$old"
+            echo "created maintenance branch $old at $BEFORE"
+          fi

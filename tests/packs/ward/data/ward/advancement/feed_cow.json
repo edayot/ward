@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "feed": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {
+          "items": "minecraft:wheat"
+        }
+      }
+    }
+  }
+}

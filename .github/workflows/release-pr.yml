@@ -1,0 +1,115 @@
+name: release-pr
+on:
+  workflow_dispatch:
+    inputs:
+      stream:
+        description: What to bump
+        required: true
+        type: choice
+        options: [python, java, minecraft]
+      version:
+        description: The new version (1.2.0 — or 26.2 for minecraft)
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      stream:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+    secrets:
+      BOT_APP_PRIVATE_KEY:
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.stream }}-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  open:
+    runs-on: ubuntu-24.04
+    env:
+      STREAM: ${{ inputs.stream }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+
+      - name: setup uv
+        uses: astral-sh/setup-uv@v8.2.0
+
+      - name: bump the version
+        id: bump
+        run: |
+          set +e
+          uv run tools/bump.py "$STREAM" "$VERSION"
+          code=$?
+          set -e
+          if [ "$code" = "2" ]; then
+            echo "toolchain for minecraft $VERSION not available yet, retrying on a later watch"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$code" != "0" ]; then
+            exit "$code"
+          fi
+
+      - name: mint bot token
+        if: steps.bump.outputs.skip != 'true'
+        id: bot
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - name: compose pull request text
+        if: steps.bot.outputs.token
+        id: text
+        run: |
+          case "$STREAM" in
+            minecraft)
+              echo "title=build(mod): support minecraft $VERSION" >> "$GITHUB_OUTPUT"
+              {
+                echo "body<<BODY"
+                echo "Automated compatibility bump for Minecraft **$VERSION**:"
+                echo "fabric-loader and fabric-api are resolved automatically;"
+                echo "check loom_version and the rest of the toolchain against"
+                echo "<https://fabricmc.net/develop> if the build misbehaves."
+                echo
+                echo "Merging releases the compatibility build to Modrinth."
+                echo "BODY"
+              } >> "$GITHUB_OUTPUT"
+              ;;
+            python)
+              echo "title=chore(release): bump python to $VERSION" >> "$GITHUB_OUTPUT"
+              echo "body=Merging releases **mcward $VERSION** to PyPI." >> "$GITHUB_OUTPUT"
+              ;;
+            java)
+              minecraft=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)
+              echo "title=chore(release): bump java to $VERSION" >> "$GITHUB_OUTPUT"
+              echo "body=Merging releases **Ward $VERSION+$minecraft** to Modrinth." >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: open pull request
+        if: steps.bot.outputs.token
+        id: pr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.bot.outputs.token }}
+          branch: release/${{ inputs.stream }}-${{ inputs.version }}
+          commit-message: ${{ steps.text.outputs.title }}
+          title: ${{ steps.text.outputs.title }}
+          body: ${{ steps.text.outputs.body }}
+          committer: mcbookshelf[bot] <mcbookshelf[bot]@users.noreply.github.com>
+          author: mcbookshelf[bot] <mcbookshelf[bot]@users.noreply.github.com>
+
+      - name: enable auto-merge
+        if: steps.pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+        run: |
+          # The release decision was made by dispatching (or detecting); the
+          # required CI checks gate the merge, so a red PR waits for a human
+          gh pr merge "${{ steps.pr.outputs.pull-request-number }}" \
+            --squash --auto --repo "$GITHUB_REPOSITORY"

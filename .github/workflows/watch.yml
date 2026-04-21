@@ -1,0 +1,46 @@
+name: watch
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Force a check for a specific Minecraft version
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.find.outputs.version }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+      - name: setup uv
+        uses: astral-sh/setup-uv@v8.2.0
+      - name: find new minecraft version
+        id: find
+        env:
+          FORCED: ${{ inputs.version }}
+        run: |
+          version="${FORCED:-$(uv run tools/watch.py)}"
+          if [ -z "$version" ]; then
+            echo "no new minecraft version"
+          else
+            echo "new minecraft version: $version"
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+          fi
+
+  bump:
+    needs: detect
+    if: needs.detect.outputs.version != ''
+    uses: ./.github/workflows/release-pr.yml
+    with:
+      stream: minecraft
+      version: ${{ needs.detect.outputs.version }}
+    secrets: inherit

@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "a": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    ["this_criterion_does_not_exist"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "ward:this_table_does_not_exist"
+        }
+      ]
+    }
+  ]
+}
