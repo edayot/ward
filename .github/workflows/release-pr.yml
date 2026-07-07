@@ -20,6 +20,8 @@ on:
         required: true
         type: string
     secrets:
+      BOT_APP_ID:
+        required: true
       BOT_APP_PRIVATE_KEY:
         required: true
 
@@ -59,7 +61,7 @@ jobs:
         id: bot
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.BOT_APP_ID }}
+          client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
       - name: compose pull request text
