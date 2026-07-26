@@ -31,5 +31,10 @@ pattern = '^version = "(?P<version>[^"]+)"$'
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcward"]
 
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/mcward/beet/commands.json" = "mcward/beet/commands.json"
+
+
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
