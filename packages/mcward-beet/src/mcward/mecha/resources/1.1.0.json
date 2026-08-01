@@ -276,7 +276,7 @@
                       "type": "argument",
                       "parser": "minecraft:objective",
                       "children": {
-                        "\u003d": {
+                        "=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -295,7 +295,7 @@
                             }
                           }
                         },
-                        "\u003c": {
+                        "<": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -314,7 +314,7 @@
                             }
                           }
                         },
-                        "\u003c\u003d": {
+                        "<=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -333,7 +333,7 @@
                             }
                           }
                         },
-                        "\u003e": {
+                        ">": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -352,7 +352,7 @@
                             }
                           }
                         },
-                        "\u003e\u003d": {
+                        ">=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -629,7 +629,7 @@
                   "type": "argument",
                   "parser": "minecraft:objective",
                   "children": {
-                    "\u003d": {
+                    "=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -648,7 +648,7 @@
                         }
                       }
                     },
-                    "\u003c": {
+                    "<": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -667,7 +667,7 @@
                         }
                       }
                     },
-                    "\u003c\u003d": {
+                    "<=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -686,7 +686,7 @@
                         }
                       }
                     },
-                    "\u003e": {
+                    ">": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -705,7 +705,7 @@
                         }
                       }
                     },
-                    "\u003e\u003d": {
+                    ">=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -995,7 +995,7 @@
                       "type": "argument",
                       "parser": "minecraft:objective",
                       "children": {
-                        "\u003d": {
+                        "=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -1014,7 +1014,7 @@
                             }
                           }
                         },
-                        "\u003c": {
+                        "<": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -1033,7 +1033,7 @@
                             }
                           }
                         },
-                        "\u003c\u003d": {
+                        "<=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -1052,7 +1052,7 @@
                             }
                           }
                         },
-                        "\u003e": {
+                        ">": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -1071,7 +1071,7 @@
                             }
                           }
                         },
-                        "\u003e\u003d": {
+                        ">=": {
                           "type": "literal",
                           "children": {
                             "source": {
@@ -1361,7 +1361,7 @@
                   "type": "argument",
                   "parser": "minecraft:objective",
                   "children": {
-                    "\u003d": {
+                    "=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -1380,7 +1380,7 @@
                         }
                       }
                     },
-                    "\u003c": {
+                    "<": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -1399,7 +1399,7 @@
                         }
                       }
                     },
-                    "\u003c\u003d": {
+                    "<=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -1418,7 +1418,7 @@
                         }
                       }
                     },
-                    "\u003e": {
+                    ">": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -1437,7 +1437,7 @@
                         }
                       }
                     },
-                    "\u003e\u003d": {
+                    ">=": {
                       "type": "literal",
                       "children": {
                         "source": {
@@ -1624,9 +1624,28 @@
                       "type": "argument",
                       "parser": "minecraft:vec3",
                       "children": {
-                        "direction": {
-                          "type": "argument",
-                          "parser": "ward:direction",
+                        "down": {
+                          "type": "literal",
+                          "executable": true
+                        },
+                        "up": {
+                          "type": "literal",
+                          "executable": true
+                        },
+                        "north": {
+                          "type": "literal",
+                          "executable": true
+                        },
+                        "south": {
+                          "type": "literal",
+                          "executable": true
+                        },
+                        "west": {
+                          "type": "literal",
+                          "executable": true
+                        },
+                        "east": {
+                          "type": "literal",
                           "executable": true
                         }
                       },

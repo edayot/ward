@@ -24,17 +24,17 @@ mcward-cli = { workspace = true }
 [project.entry-points.beet]
 commands = "mcward.beet.commands"
 
+[project.optional-dependencies]
+mecha = [
+    "mecha>=0.104.1",
+]
+
 [tool.hatch.version]
 path = "../../pyproject.toml"
 pattern = '^version = "(?P<version>[^"]+)"$'
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcward"]
-
-
-[tool.hatch.build.targets.wheel.force-include]
-"src/mcward/mecha/commands.json" = "mcward/mecha/commands.json"
-
 
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
